@@ -8,8 +8,11 @@ and confusion matrix outputs.
 """
 
 #Import RE
-import re#Import Pandas
+import re
+#Import Pandas
 import pandas as pd
+#Import Numpy
+import numpy as np
 #Import split
 from sklearn.model_selection import train_test_split
 #Import model
@@ -75,17 +78,27 @@ if PRINT_SAMPLE:
         SENTIMENT_EMOJI = "😊 Positive" if sentiment == 1 else "😠 Negative"
         print(f"{SENTIMENT_EMOJI} -> {review}")
 
-#Evaluate against the sample set labels - Logistic Regression
-print("Accuracy Logistic Regression (sample set):", accuracy_score(y_test, logreg_prediction))
-print("Classification report Logistic Regression (sample set):\n", classification_report(
-    y_test,
-    logreg_prediction
-))
-print("Confusion matrix Logistic Regression:", confusion_matrix(y_test, logreg_prediction))
-#Evaluate against the sample set labels - Multinomia
-print("Accuracy Multinomia (sample set):", accuracy_score(y_test, mnnb_model_prediction))
-print("Classification report Multinomia (sample set):\n", classification_report(
-    y_test,
-    mnnb_model_prediction
-))
-print("Confusion matrix Multinomia:", confusion_matrix(y_test, mnnb_model_prediction))
+#Evaluate models
+logreg_accuracy = accuracy_score(y_test, logreg_prediction)
+logreg_report = classification_report(y_test, logreg_prediction)
+logreg_confusion  = confusion_matrix(y_test, logreg_prediction)
+
+mnnb_accuracy = accuracy_score(y_test, mnnb_model_prediction)
+mnnb_report = classification_report(y_test, mnnb_model_prediction)
+mnnb_confusion  = confusion_matrix(y_test, mnnb_model_prediction)
+
+#Save text report
+with open("reports/evaluation.txt", "w", encoding="utf-8") as f:
+    f.write("=== Logistic Regression ===\n")
+    f.write(f"Accuracy: {logreg_accuracy:.4f}\n\n")
+    f.write("Classification Report:\n")
+    f.write(logreg_report + "\n")
+    f.write("Confusion Matrix:\n")
+    f.write(np.array2string(logreg_confusion) + "\n\n")
+
+    f.write("=== Multinomial Naive Bayes ===\n")
+    f.write(f"Accuracy: {mnnb_accuracy:.4f}\n\n")
+    f.write("Classification Report:\n")
+    f.write(mnnb_report + "\n")
+    f.write("Confusion Matrix:\n")
+    f.write(np.array2string(mnnb_confusion) + "\n")
